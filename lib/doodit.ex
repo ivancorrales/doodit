@@ -7,32 +7,34 @@ defmodule Doodit do
  	 |> process
   end
 
+  def process({command, options}) when command === "run" do
+	IO.puts "Running...."
+  end
 
- def process({command, options}) when command === "run" do
-	IO.puts "Ok."	
- end
+  def process({command, options}) when command === "debug" do
+ 	IO.puts "Debugging...."
+  end
 
-
- def process(_) do
+  def process(_) do
     IO.puts "No valid input"
- end
+  end
 
- defp parse_args(args) do
+  defp parse_args(args) do
  	{options, command, c} = OptionParser.parse(args,
  		switches: switches,
  		aliases: aliases
  	)
 	IO.puts "#{inspect options} #{inspect command} #{inspect c}"
 	{Enum.fetch!(command,0), options}
- end
+  end
 
- defp switches do
+  defp switches do
  	[config: :string, input: :string, output: :string, verbose: :boolean]
- end	
+  end	
 
- defp aliases do
+  defp aliases do
  	[c: :config, i: :input, o: :output, p: :port, v: :verbose]
- end
+  end
 
  
 
