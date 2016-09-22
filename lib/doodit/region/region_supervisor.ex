@@ -17,8 +17,6 @@ defmodule Doodit.Region.Supervisor do
   end
 
   def start_region(supervisor) do
-    IO.puts "start_region"
-    IO.puts "#{inspect supervisor}"
     import Supervisor.Spec
     Supervisor.start_child(supervisor, worker(Doodit.Region, [], [id: :foo]))
   end

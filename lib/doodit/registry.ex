@@ -55,6 +55,7 @@ defmodule Doodit.Registry do
   end
 
   def handle_call({:create, name}, _from, state) do
+    
     case lookup(state.names, name) do
       {:ok, pid} ->
         {:reply, pid, state} ## Reply with pid

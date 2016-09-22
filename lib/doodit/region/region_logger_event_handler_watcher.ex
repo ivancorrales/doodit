@@ -27,13 +27,10 @@ defmodule Doodit.Region.LoggerEventHandlerWatcher do
 
   
   defp start_handler(event_manager) do
-    IO.puts "add handler #{inspect event_manager}"
     case GenEvent.add_mon_handler(event_manager, Doodit.Region.LoggerEventHandler, []) do
      :ok ->
-       IO.puts "OK"
        {:ok, event_manager}
      {:error, reason}  ->
-       IO.puts "ERROR #{reason}"
        {:stop, reason}
     end
   end

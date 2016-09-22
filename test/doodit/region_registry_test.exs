@@ -1,6 +1,17 @@
 defmodule Doodit.RegistryTest do
   use ExUnit.Case, async: true
 
+
+  defmodule Forwarder do
+    use GenEvent
+
+    def handle_event(event, parent) do
+      send parent, event
+      {:ok, parent}
+    end
+  end
+
+
   setup do
     ets = :ets.new(:registry_table, [:set, :public])
     {:ok, registry: start_registry(ets), ets: ets}
@@ -9,8 +20,10 @@ defmodule Doodit.RegistryTest do
   defp start_registry(ets) do
     {:ok, sup} = Doodit.Region.Supervisor.start_link
     {:ok, manager} = GenEvent.start_link
+    {:ok, _}  =  Doodit.Region.LoggerEventHandlerWatcher.start_link manager
     {:ok, registry} = Doodit.Registry.start_link(ets, manager, sup)
-    #GenEvent.add_mon_handler(manager, Forwarder, self())
+    
+    ##GenEvent.add_mon_handler(manager, Forwarder, self())
     registry
   end
 

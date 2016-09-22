@@ -10,6 +10,10 @@ defmodule Doodit.Region.LoggerEventHandler do
     {:ok, [x|messages]}
   end
 
+  def handle_event(_, state) do
+    {:ok, state}
+  end
+
 
 
 end
