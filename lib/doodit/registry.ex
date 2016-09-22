@@ -17,6 +17,7 @@ defmodule Doodit.Registry do
   Returns `{:ok, pid}` if the region exists, `:error` otherwise.
   """
   def lookup(table, name) do
+    
     case :ets.lookup(table, name) do
       [{^name, region}] -> {:ok, region}
       [] -> :error
@@ -46,12 +47,10 @@ defmodule Doodit.Registry do
     refs = :ets.foldl(fn {name, pid}, acc ->
       Map.put(acc, Process.monitor(pid), name)
     end, Map.new, table)
-
     {:ok, %{names: table, refs: refs, events: events, regions: regions}}
   end
 
   def handle_call({:stop}, _from, state) do
-    IO.puts "handle_call_stop"
     {:stop, :normal, :ok, state}
   end
 
@@ -60,12 +59,12 @@ defmodule Doodit.Registry do
       {:ok, pid} ->
         {:reply, pid, state} ## Reply with pid
       :error ->
-        {:ok, pid} = Doodit.Region.Supervisor.start_region(state.regions)
-        ref = Process.monitor(pid)
-        refs = Map.put(state.refs, ref, name)
-        :ets.insert(state.names, {name, pid})
-        GenEvent.sync_notify(state.events, {:create, name, pid})
-        {:reply, pid, %{state | refs: refs}} ## Reply with pid
+        {:ok, pid} =  Doodit.Region.Supervisor.start_region(state.regions) 
+          ref = Process.monitor(pid)
+          refs = Map.put(state.refs, ref, name)
+          :ets.insert(state.names, {name, pid})
+          GenEvent.sync_notify(state.events, {:create, name, pid})
+          {:reply, pid, %{state | refs: refs}} ## Reply with pid
     end
   end
 
